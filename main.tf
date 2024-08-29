@@ -1,35 +1,23 @@
-# Provider Configuration
 provider "azurerm" {
   features {}
 }
 
-# Define the resource group
+# Define the resource group (if it doesn't exist)
 resource "azurerm_resource_group" "example" {
-  name     = "myResourceGroup2"
-  location = "East US"
+  name     = var.resource_group_name
+  location = var.location
 }
 
-# Define the policy definition
-resource "azurerm_policy_definition" "example_policy" {
-  name         = "example-policy"
-  policy_type   = "Custom"
-  mode          = "All"
-  policy_rule   = <<POLICY_RULE
-{
-  "if": {
-    "field": "type",
-    "equals": "Microsoft.Compute/virtualMachines"
-  },
-  "then": {
-    "effect": "deny"
-  }
-}
-POLICY_RULE
+# Fetch existing policy assignment using the correct name
+data "azurerm_policy_assignment" "example" {
+  name     = "ASC Default"  # Policy assignment name
+  scope    = "/subscriptions/${var.subscription_id}"  # Subscription-level scope
 }
 
-# Assign the policy to the resource group
-resource "azurerm_policy_assignment" "example_policy_assignment" {
-  name                 = "example-policy-assignment"
-  scope                = azurerm_resource_group.example.id
-  policy_definition_id = azurerm_policy_definition.example_policy.id
+output "resource_group_id" {
+  value = azurerm_resource_group.example.id
+}
+
+output "policy_assignment_id" {
+  value = data.azurerm_policy_assignment.example.id
 }
