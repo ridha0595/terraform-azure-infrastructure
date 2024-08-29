@@ -1,6 +1,3 @@
-provider "azurerm" {
-  features {}
-}
 
 resource "azurerm_policy_definition" "example_policy" {
   name         = "example-policy"
