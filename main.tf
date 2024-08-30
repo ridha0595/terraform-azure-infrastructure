@@ -1,5 +1,5 @@
 provider "azurerm" {
-  features = {}
+  features {}
 }
 
 resource "azurerm_role_assignment" "group_role_assignment" {
