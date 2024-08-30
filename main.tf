@@ -1,15 +1,16 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"  # Specify the desired provider version
+    }
+  }
+}
+
 provider "azurerm" {
   features {}
-  version = "~> 3.0"  # Specify the version you want to use
 }
 
-# Define Resource Group
-resource "azurerm_resource_group" "my_resource_group" {
-  name     = "myResourceGroup2"
-  location = "East US"
-}
-
-# Assign RBAC Roles
 resource "azurerm_role_assignment" "group_role_assignment" {
   scope                = azurerm_resource_group.my_resource_group.id
   role_definition_name = "Contributor"
@@ -22,28 +23,14 @@ resource "azurerm_role_assignment" "user_role_assignment" {
   principal_id         = "9a5f4e5a-9094-4396-8c17-8745fd68a4c2"  # User Id (John Doe)
 }
 
-# Define Policy Definition (if needed, adjust according to your needs)
-resource "azurerm_policy_definition" "example_policy" {
-  name         = "example-policy-definition"
-  policy_type   = "Custom"
-  mode          = "All"
-  display_name  = "Example Policy"
-  description   = "An example policy definition"
-
-  policy_rule   = jsonencode({
-    if = {
-      field = "type"
-      equals = "Microsoft.Storage/storageAccounts"
-    }
-    then = {
-      effect = "deny"
-    }
-  })
+resource "azurerm_resource_group" "my_resource_group" {
+  name     = "myResourceGroup2"
+  location = "East US"
 }
 
-# Assign Policy Definition
-resource "azurerm_policy_assignment" "policy_assignment" {
-  name                 = "example-policy-assignment"
-  scope                = azurerm_resource_group.my_resource_group.id
-  policy_definition_id = azurerm_policy_definition.example_policy.id
-}
+# Uncomment and update if policy assignments are supported in your version
+# resource "azurerm_policy_assignment" "policy_assignment" {
+#   name                 = "example-policy-assignment"
+#   scope                = azurerm_resource_group.my_resource_group.id
+#   policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d"  # Policy def id
+# }
