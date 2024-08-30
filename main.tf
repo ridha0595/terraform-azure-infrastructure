@@ -24,7 +24,7 @@ resource "azurerm_role_assignment" "user_role_assignment" {
 }
 
 resource "azurerm_resource_group" "my_resource_group" {
-  name     = "myResourceGroup2"
+  name     = "myResourceGroup3"
   location = "East US"
 }
 
